@@ -1,18 +1,34 @@
-import { config as dotEnvConfig } from "dotenv";
-dotEnvConfig();
 import { ethers } from "hardhat";
+import {
+  WhiteListSessionValidationModule,
+  WhiteListSessionValidationModule__factory,
+} from "../typechain-types";
 
 async function main() {
-  const signer = new ethers.Wallet(process.env.PRIVATE_KEY as string, ethers.provider);
-  console.log("Deploying contracts with the account:", signer.address);
-  const whitelistSessionValidationModule = await ethers.deployContract("WhiteListSessionValidationModule", [
-    signer.address,
-    [],
-  ], {
-    signer: signer,
-  });
+  const provider = ethers.provider;
+  const [Deployer] = await ethers.getSigners();
 
-  await whitelistSessionValidationModule.waitForDeployment();
+  console.log("Deployer account:", Deployer.address);
+  console.log(
+    "Account balance:",
+    (await provider.getBalance(Deployer.address)).toString()
+  );
+
+  console.log("\n===== Deploy Whitelist Module Contract =====");
+  const Module = (await ethers.getContractFactory(
+    "WhiteListSessionValidationModule",
+    Deployer
+  )) as WhiteListSessionValidationModule__factory;
+  const module: WhiteListSessionValidationModule = await Module.deploy(
+    Deployer.address,
+    []
+  );
+  console.log("Tx Hash: %s", module.deploymentTransaction()?.hash);
+  await module.deploymentTransaction()?.wait();
+
+  console.log("Whitelist Module Contract: ", await module.getAddress());
+
+  console.log("\n===== DONE =====");
 }
 
 // We recommend this pattern to be able to use async/await everywhere
