@@ -72,7 +72,7 @@ const App = () => {
     const sessionKey = await smartAccount.createSessions([{
       validUntil: 0,
       validAfter: 0,
-      sessionValidationModule: "0x0aFC10c57709038Ae8FE241F15E102725C13Acb9",
+      sessionValidationModule: "0x8622DE43Ef5744835cd8891a45238E088510C107",
       sessionKeyDataInAbi: [
         ['address', 'address'],
         [
@@ -99,18 +99,12 @@ const App = () => {
     const address = await smartAccount.getAddress();
 
     // Change this to any call you want to list of KIP ecosystem contracts
-    // KIPRegistration: 0x73008Baf8718415AA2028Cc8D11d25Da5E5F719C
-    // KIPService: 0xedD03EC818DA76eB917E4a2f6Ee1A2CA11c779cC
-    // KIPIdentification: 0x42795a29Ac8ef62ea53582d1a91d297cF728e572
     const mintInterface = new Interface(['function mint(address, uint256) external']);
     // Mint a token
     const encodedData = mintInterface.encodeFunctionData('mint', [address, (Math.random() * (10000000 - 1000 + 1) ) << 0]);
 
     const tx = {
       // Must be in the list of KIP ecosystem contracts
-      // KIPRegistration: 0x73008Baf8718415AA2028Cc8D11d25Da5E5F719C
-      // KIPService: 0xedD03EC818DA76eB917E4a2f6Ee1A2CA11c779cC
-      // KIPIdentification: 0x42795a29Ac8ef62ea53582d1a91d297cF728e572
       to: "0xbB3aE74956834EFfb093eDD06F4422e74548281E",
       value: '0x0',
       data: encodedData,
